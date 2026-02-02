@@ -178,3 +178,23 @@ print("95% Confidence Interval: (", round(ci_lower, 4), ",", round(ci_upper, 4),
 
 A 95% confidence interval was constructed for the difference in conversion rates between the test and control groups. Since the interval does not include zero, the difference is statistically significant, indicating that the test variant improves conversion performance.
 
+Bar charts are primarily used to compare different categories of data, visualize trends over time, and show variations in values using rectangular bars. 
+
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Load data
+df = pd.read_csv('/mnt/data/marketing_AB.csv')
+
+# Calculate conversion rate by group
+group_rates = df.groupby('test group')['converted'].mean()
+
+# Plot
+plt.figure()
+group_rates.plot(kind='bar')
+plt.xlabel('Group')
+plt.ylabel('Conversion Rate')
+plt.title('Conversion Rate by Group')
+plt.show()
+
+The visualization shows the distribution of conversions across control and test groups. The test group demonstrates a higher conversion rate, supporting the statistical results obtained from hypothesis testing.
