@@ -1,0 +1,180 @@
+Steps done in the task.
+Download link of the data set: https://www.kaggle.com/datasets/faviovaz/marketing-ab-testing?utm_source=chatgpt.com
+
+Data import and verifying. 
+import pandas as pd
+# Example: load a CSV in Colab
+df = pd.read_csv('/marketing_AB.csv')
+df.head()
+df.columns
+df['test group'].unique()
+df['test group'].value_counts(dropna=False)
+
+
+# Separate control and test groups
+control_group = df[df['test group'] == 'ad']
+test_group = df[df['test group'] == 'psa']
+
+# Check number of observations
+print("Control group size:", control_group.shape[0])
+print("Test group size:", test_group.shape[0])
+
+import numpy as np
+from scipy import stats
+
+# two-sample t-test example
+groupA = df[df['test group'] == 'ad']['converted']
+groupB = df[df['test group'] == 'psa']['converted']
+
+t_stat, p_value = stats.ttest_ind(groupA, groupB)
+print("t-statistic:", t_stat)
+print("p-value:", p_value)
+
+“Since the p-value is less than 0.05, we reject the null hypothesis and conclude that the marketing campaign had a statistically significant effect.”
+
+from scipy import stats
+
+# Define the metrics for the t-test using the 'converted' column
+control_metric = control_group['converted']
+test_metric = test_group['converted']
+
+t_stat, p_value = stats.ttest_ind(
+    control_metric,
+    test_metric,
+    equal_var=False  # safer for real-world data
+)
+
+print("t-statistic:", t_stat)
+print("p-value:", p_value) 
+
+“The dataset was loaded using pandas, and users were split into control and test groups based on the group column. The conversion metric was extracted for each group to prepare for hypothesis testing.”
+“Initial filtering returned zero rows due to inconsistent group labels. The issue was resolved by inspecting unique values and standardizing the group column.”
+
+alpha = 0.05 # Define the significance level
+Null Hypothesis (H₀)
+
+There is no significant difference in conversion rates between the control group and the test group.
+𝐻0: 𝜇𝑐𝑜𝑛𝑡𝑟𝑜𝑙 = 𝜇𝑡𝑒𝑠𝑡 H0 : μ control =μ test
+	​
+ Alternative Hypothesis (H₁)
+
+There is a significant difference in conversion rates between the control group and the test group.
+𝐻1: 𝜇𝑐𝑜𝑛𝑡𝑟𝑜𝑙 ≠𝜇𝑡𝑒𝑠𝑡H1 : μ control = μ test
+(Two-tailed test — standard for A/B testing unless direction is specified)
+
+if p_value < alpha:
+    print("Reject the null hypothesis (H0)")
+else:
+    print("Fail to reject the null hypothesis (H0)")
+
+A two-sample t-test was conducted at a 5% significance level to compare conversion rates between control and test groups. Since the p-value was less than 0.05, the null hypothesis was rejected, indicating a statistically significant difference between the two marketing variants.
+
+# Calculate mean (conversion rate)
+control_mean = control_metric.mean()
+test_mean = test_metric.mean()
+
+print("Control group conversion rate:", round(control_mean, 4))
+print("Test group conversion rate:", round(test_mean, 4))
+
+Alternative:
+print("Control conversions:", control_metric.sum())
+print("Test conversions:", test_metric.sum())
+
+“The mean of the conversion variable was calculated for each group, representing the conversion rate for control and test variants.”
+
+contingency_table = pd.crosstab(df['test group'], df['converted'])
+contingency_table
+
+from scipy.stats import chi2_contingency
+chi2, p_value, dof, expected = chi2_contingency(contingency_table)
+print("Chi-square statistic:", chi2)
+print("p-value:", p_value)
+
+“Since the conversion metric is binary, a Chi-Square test of independence was used to compare proportions between control and test groups.”
+
+Use two-sample t-test if the metric were:
+Revenue
+Time spent
+Order value
+
+stats.ttest_ind(control_metric, test_metric, equal_var=False)
+
+import pandas as pd
+from scipy.stats import chi2_contingency
+
+# Create contingency table
+contingency_table = pd.crosstab(df['group'], df['converted'])
+print(contingency_table)
+
+chi2_stat, p_value, dof, expected = chi2_contingency(contingency_table)
+
+print("Chi-square statistic:", chi2_stat)
+print("p-value:", p_value)
+
+
+Interpretation (Simple)
+p-value < 0.05 → statistically significant difference
+p-value ≥ 0.05 → no significant difference
+
+import pandas as pd
+from scipy.stats import chi2_contingency
+
+# Re-create contingency_table and calculate p_value to ensure it's defined
+contingency_table = pd.crosstab(df['test group'], df['converted'])
+chi2_stat, p_value, dof, expected = chi2_contingency(contingency_table)
+
+alpha = 0.05
+
+if p_value < alpha:
+    print("Reject the null hypothesis (H0)")
+else:
+    print("Fail to reject the null hypothesis (H0)")
+
+“A Chi-Square test of independence was conducted, yielding a p-value less than 0.05, indicating a statistically significant difference in conversion rates between control and test groups.”
+
+Case 1: p-value < 0.05
+The result is statistically significant.
+
+Interpretation:
+Since the p-value is less than 0.05, we reject the null hypothesis. This indicates a statistically significant difference in conversion rates between the control and test groups, suggesting that the marketing variation had a measurable impact.
+
+Case 2: p-value ≥ 0.05
+The result is not statistically significant.
+
+Interpretation:
+Since the p-value is greater than 0.05, we fail to reject the null hypothesis. This indicates that there is no statistically significant difference in conversion rates between the control and test groups.
+
+“At a 5% significance level, the p-value indicates whether the observed difference in conversions is statistically significant.”
+
+import numpy as np
+from scipy import stats
+
+# Sample sizes
+n_control = len(control_metric)
+n_test = len(test_metric)
+
+# Conversion rates (means)
+p_control = control_metric.mean()
+p_test = test_metric.mean()
+
+# Difference in proportions
+diff = p_test - p_control
+
+# Standard error of difference in proportions
+se = np.sqrt(
+    (p_control * (1 - p_control) / n_control) +
+    (p_test * (1 - p_test) / n_test)
+)
+
+# Z value for 95% confidence
+z = stats.norm.ppf(1 - 0.05/2)
+
+# Confidence interval
+ci_lower = diff - z * se
+ci_upper = diff + z * se
+
+print("Difference in conversion rates:", round(diff, 4))
+print("95% Confidence Interval: (", round(ci_lower, 4), ",", round(ci_upper, 4), ")")
+
+A 95% confidence interval was constructed for the difference in conversion rates between the test and control groups. Since the interval does not include zero, the difference is statistically significant, indicating that the test variant improves conversion performance.
+
