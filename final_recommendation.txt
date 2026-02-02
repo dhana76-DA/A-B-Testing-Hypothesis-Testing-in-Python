@@ -1,0 +1,15 @@
+Final Recommendation – Marketing A/B Testing Project
+
+This project evaluated the effectiveness of two marketing variants using A/B testing and hypothesis testing techniques in Python. Users were divided into control and test groups, and conversion was used as the primary performance metric.
+
+The analysis showed that the test group achieved a higher conversion rate compared to the control group. Statistical testing using a Chi-Square test resulted in a p-value below the 0.05 significance level, indicating that the observed difference in conversion rates is statistically significant and unlikely to have occurred by random chance. Additionally, the 95% confidence interval for the difference in conversion rates did not include zero, further supporting the reliability of the result.
+
+Based on these findings, the test marketing strategy demonstrates a positive and measurable impact on user conversions. Therefore, it is recommended to adopt the test campaign as the primary marketing approach.
+
+To further improve marketing performance, it is recommended to:
+1. Run follow-up A/B tests focusing on ad frequency, timing, and messaging.
+2. Segment users by demographics or behavior to identify high-performing subgroups.
+3. Monitor long-term conversion trends to ensure sustained impact.
+4. Combine conversion analysis with revenue-based metrics for deeper business insights.
+
+Overall, data-driven experimentation proved effective in optimizing marketing decisions and should be continued as part of the organization’s marketing strategy.
