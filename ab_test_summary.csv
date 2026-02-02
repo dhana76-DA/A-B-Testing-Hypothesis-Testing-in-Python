@@ -1,8 +1,8 @@
 Metric,Control,Test
-Sample Size,0,0.0
-Conversion Rate,,
-Difference (Test - Control),,
-Lift (%),,
-p-value,,0.0
-95% CI Lower,,
-95% CI Upper,,
+Sample Size,564577,23524
+Conversion Rate,0.0255,0.0179
+Difference (Test - Control),,-0.0077
+Lift (%),,-30.11
+p-value,,0
+95% CI Lower,,-0.0094
+95% CI Upper,,-0.006
